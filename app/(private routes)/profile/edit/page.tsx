@@ -20,21 +20,20 @@ const EditProfile = () => {
       .then((user) => {
         setUserName(user.username ?? "");
         setEmail(user.email ?? "");
-        setAvatar(user.avatar ?? "");
+        setAvatar(user.avatar ?? "/default_avatar.jpg");
       })
       .catch((err) => console.error("Failed to fetch user", err));
   }, []);
 
-  const handleSaveUser = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  // Form Action замість onSubmit
+  const saveAction = async (formData: FormData) => {
     try {
-      const updatedUser = await updateMe({
-        username,
-      });
+      const newUsername = formData.get("username")?.toString() ?? "";
+      const updatedUser = await updateMe({ username: newUsername });
       setUser(updatedUser);
       router.push("/profile");
     } catch (error) {
-      console.error("Oops, some error:", error);
+      console.error("Failed to update user:", error);
     }
   };
 
@@ -47,22 +46,21 @@ const EditProfile = () => {
       <div className={css.profileCard}>
         <h1 className={css.formTitle}>Edit Profile</h1>
 
-       
-          <Image
-            src={avatar}
-            alt="User Avatar"
-            width={120}
-            height={120}
-            className={css.avatar}
-            priority
-          />
-        
+        <Image
+          src={avatar}
+          alt="User Avatar"
+          width={120}
+          height={120}
+          className={css.avatar}
+          priority
+        />
 
-        <form className={css.profileInfo} onSubmit={handleSaveUser}>
+        <form className={css.profileInfo} action={saveAction}>
           <div className={css.usernameWrapper}>
             <label htmlFor="username">Username:</label>
             <input
               id="username"
+              name="username"
               type="text"
               className={css.input}
               value={username}
