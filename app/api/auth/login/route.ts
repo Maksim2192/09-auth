@@ -5,7 +5,7 @@ import { parse } from 'cookie';
 import { isAxiosError } from 'axios';
 import { logErrorResponse } from '../../_utils/utils';
 
-export async function Post(req: NextRequest) {
+export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const apiRes = await api.post('auth/login', body);
